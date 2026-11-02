@@ -28,10 +28,6 @@ $(REPONAME)/build/cmake.log: $(REPONAME)/build
 
 $(REPONAME)/build:
 	{ \
-	    pwd > ~/Desktop/R.out && \
-	    ls -l >> ~/Desktop/R.out && \
-	    ls -l >> ~/Desktop/R.out && \
-	    ls -l birp_cpp >> ~/Desktop/R.out && \
 	    [ -x "$${CMAKE}" ]  || CMAKE=$$(which cmake); \
 	    [ -x "$${CMAKE}" ]  || CMAKE=/usr/bin/cmake; \
 	    [ -x "$${CMAKE}" ]  || CMAKE=/usr/local/bin/cmake; \

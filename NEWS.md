@@ -1,3 +1,7 @@
+# birp 0.9.1
+* Remved fmt-dependency
+* New repository structure
+
 # birp 0.9.0
 
 Addressed CRAN installation failures on several servers:

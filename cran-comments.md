@@ -1,3 +1,8 @@
+## New version 0.9.1
+This is the birp version 0.9.1
+* Different repository structure, the cpp code is already in the repository
+* Removed fmt-dependency
+
 ## Resubmission 8
 
 This is a resubmission. All issues of Resubmission 7 have been adressed:
