@@ -17,7 +17,6 @@ PKG_LIBS    = -L$(REPONAME) -lbirpLib -lstattools -lcoretools -larmadillo -lz \
 $(ARMA_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
 
 .PHONY: all
-.NOTPARALLEL:
 
 all: $(REPONAME) $(SHLIB)
 

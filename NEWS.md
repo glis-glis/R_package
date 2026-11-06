@@ -1,3 +1,6 @@
+# birp 0.9.2
+* Graceful failure on network issues
+
 # birp 0.9.1
 * Remved fmt-dependency
 * New repository structure

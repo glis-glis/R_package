@@ -1,3 +1,6 @@
+## New version 0.9.2
+* Graceful failure on network issues
+
 ## Resubmission 1
 This is a resubmission. Changes:
 * Fixing Windows problems with POSIX time
