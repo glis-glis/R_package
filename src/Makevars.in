@@ -55,13 +55,15 @@ $(REPONAME)/build:
 	    R_CXX=$$($${RSCRIPT} --vanilla --slave -e "cat(system2(file.path(R.home('bin'), 'R'), c('CMD','config','CXX'), stdout=TRUE))") && \
 	    echo "$${R_CXX}" && \
 	    R_CXXFLAGS=$$($${RSCRIPT} --vanilla --slave -e "cat(system2(file.path(R.home('bin'), 'R'), c('CMD','config','CXXFLAGS'), stdout=TRUE))") && \
-	    echo "$${R_CXXFLAGS}"; \
+	    echo "$${R_CXXFLAGS}" && \
+	    MACOSX_DEP=$$($${RSCRIPT} --vanilla --slave -e "cat(system2(file.path(R.home('bin'),'R'),c('CMD','config','MACOSX_DEPLOYMENT_TARGET'),stdout=TRUE))") || \
+		true; MACOSX_DEP=${${MACOSX_DEP:-11.0}}; \
 	} || { \
 	    echo "could not find R flags!"; exit 1; \
 	} && { \
 	    mkdir $(REPONAME)/build && cd $(REPONAME)/build && \
 		CC=$${R_CC} CXX=$${R_CXX} CXXFLAGS=$${R_CXXFLAGS} \
-	    $${CMAKE} -S .. \
+	    MACOSX_DEPLOYMENT_TARGET=$${MACOSX_DEP} $${CMAKE} -S .. \
 	        -G "Unix Makefiles" \
 	        -DCMAKE_BUILD_TYPE=Release \
 	        -DBUILD_SHARED_LIBS:bool=OFF \
