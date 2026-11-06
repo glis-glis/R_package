@@ -16,9 +16,12 @@ PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
 PKG_LIBS    = -L$(REPONAME) -lbirpLib -lstattools -lcoretools -larmadillo -lz \
 $(ARMA_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
 
-.Phony: all
+.PHONY: all
+.NOTPARALLEL:
 
 all: $(REPONAME) $(SHLIB)
+
+$(OBJECTS): $(REPONAME)/arma.libs
 
 $(SHLIB): $(REPONAME) $(REPONAME)/arma.libs
 
@@ -34,13 +37,19 @@ $(REPONAME)/build:
 	    [ -x "$${CMAKE}" ]  || CMAKE=/opt/homebrew/bin/cmake; \
 	    [ -x "$${CMAKE}" ]  || CMAKE=/Applications/CMake.app/Contents/bin/cmake; \
 	    echo "$${CMAKE}" && [ -x "$${CMAKE}" ] ; \
+	} || { \
+	    echo "could not find cmake!"; exit 1; \
 	} && { \
 	    RSCRIPT=$${R_HOME}/bin$${R_ARCH_BIN}/Rscript.exe; \
 	    [ -x "$${RSCRIPT}" ] || RSCRIPT=$${R_HOME}/bin/Rscript; \
 	    echo "$${RSCRIPT}" && [ -x "$${RSCRIPT}" ] ; \
+	} || { \
+	    echo "could not find rscript!"; exit 1; \
 	} && { \
 	    RCPP_INCLUDE=$$($${RSCRIPT} --vanilla --slave -e "stopifnot(require('Rcpp', quietly=TRUE));cat(Rcpp:::Rcpp.system.file('include'))") && \
 	    echo "$${RCPP_INCLUDE}" && [ -d "$${RCPP_INCLUDE}" ] ; \
+	} || { \
+	    echo "could not find RCPP!"; exit 1; \
 	} && { \
 	    R_CC=$$($${RSCRIPT} --vanilla --slave -e "cat(system2(file.path(R.home('bin'),'R'),c('CMD','config','CC'),stdout=TRUE))")  && \
 	    echo "$${R_CC}" && \
@@ -48,6 +57,8 @@ $(REPONAME)/build:
 	    echo "$${R_CXX}" && \
 	    R_CXXFLAGS=$$($${RSCRIPT} --vanilla --slave -e "cat(system2(file.path(R.home('bin'), 'R'), c('CMD','config','CXXFLAGS'), stdout=TRUE))") && \
 	    echo "$${R_CXXFLAGS}"; \
+	} || { \
+	    echo "could not find R flags!"; exit 1; \
 	} && { \
 	    mkdir $(REPONAME)/build && cd $(REPONAME)/build && \
 		CC=$${R_CC} CXX=$${R_CXX} CXXFLAGS=$${R_CXXFLAGS} \
@@ -63,17 +74,25 @@ $(REPONAME)/build:
 	        -DBUILD_SMOKE_TEST=false \
 	        -DRCPP_INCLUDE_DIRS="$${RCPP_INCLUDE}" \
 	        -DR_HOME="$(R_HOME)" > cmake.log; \
+	} || { \
+	    echo "could not run cmake, make sure your network connection works!"; cd ..; rm -rf build; exit 1; \
 	} && { \
 	    sed '/^#pragma/d' ../coretools/fast_float/include/fast_float/parse_number.h > tmp.h && \
 	    mv tmp.h ../coretools/fast_float/include/fast_float/parse_number.h && \
 	    echo "ARMA_LIBS = $$(grep ARMA_LIBS cmake.log | cut -d "=" -f2 | cut -d ' ' -f2- | sed 's/;/ /g')" > ../arma.libs; \
+	} || { \
+	    echo "could not find armadillo, make sure to have LAPACK installed!"; cd ..; rm -rf build; exit 1; \
 	} && { \
 	    make birpLib; \
+	} || { \
+	    echo "could not install birp!"; cd ..; rm -rf build; exit 1; \
 	} && { \
 	    mv -v libbirpLib.* .. && \
 	    mv -v _deps/coretools-build/libcoretools.* .. && \
 	    mv -v _deps/stattools-build/libstattools.* .. && \
 	    mv -v _deps/armadillo-build/libarmadillo.* ..; \
+	} || { \
+	    echo "could not copy the libraries to the correct path!"; cd ..; rm -rf build; exit 1; \
 	} && { \
 	    cd .. && rm -rf build && \
 	    find coretools -mindepth 1 -maxdepth 1 \
@@ -81,4 +100,6 @@ $(REPONAME)/build:
 	    find stattools -mindepth 1 -maxdepth 1 ! -name core -exec rm -rv {} +; \
 	    find coretools/arma -mindepth 1 -maxdepth 1 ! -name include ! -exec rm -rv {} +; \
 	    find coretools/fast_float -mindepth 1 -maxdepth 1 ! -name include -exec rm -rv {} +; \
+	} || { \
+	    echo "could not correctly cleanup!"; rm -rf build; exit 1; \
 	}

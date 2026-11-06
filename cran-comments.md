@@ -1,3 +1,10 @@
+## Resubmission 1
+This is a resubmission. Changes:
+* Fixing Windows problems with POSIX time
+Comment:
+Commit 0.9.0 does not work anymore, as we changed the url from https://bitbucket.org/wegmannlab/birp\_cpp to https://bitbucket.org/wegmannlab/birp . I can also resubmit 0.9.0 to CRAN again, with the corrected URL, if you wish. This version is 0.9.1, which has different library dependency and a different git repository structure.
+
+
 ## New version 0.9.1
 This is the birp version 0.9.1
 * Different repository structure, the cpp code is already in the repository
