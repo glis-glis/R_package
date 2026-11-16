@@ -1,3 +1,6 @@
+# birp 0.9.3
+* Remove Mac OSX warnings
+
 # birp 0.9.2
 * Graceful failure on network issues
 

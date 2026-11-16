@@ -1,5 +1,9 @@
+## New version 0.9.3
+* Thanks to Prof Brian Ripley for explaining the OSX warnings, they are fixed
+
 ## New version 0.9.2
 * Graceful failure on network issues
+* The failure of 0.9.1 on r-devel-linux-x86\_64-fedora-clang is due to a network connection problem on that server. Should the same network problem arrise for 0.9.2, a clear error message will be printed.
 
 ## Resubmission 1
 This is a resubmission. Changes:
